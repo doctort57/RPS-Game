@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <title>Employee Tracker</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Linking CSS -->
+    <link rel="stylesheet" type="text/css" href="assets\css\reset.css">
+    <link rel="stylesheet" type="text/css" href="assets\css\style.css">
+
+    <!-- Firebase Reference -->
+    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+    <!-- Moment.js Reference -->
+    <script src="http://momentjs.com/downloads/moment.js"></script>  
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+  </head>
+
+  <body>
+    
+
+    <!-- Employee Tracker -->
+    <div class="container">
+
+      <!-- Jumbotron -->
+      <div class="jumbotron" style="background-color: blue; color: white">
+        <h1 class="text-center">Rock Paper Scissors Game</h1>
+       
+      </div>
+      <br />
+
+      <p id="player1Nm" class="text-center">
+      </p>
+
+      <p id="player2Nm" class="text-center">
+      </p>
+
+       <form id="player-form">
+ 
+     <!-- Button triggers new player to be added -->
+       <input type="text" class="center-block text"  id="player-input" Name>
+       <br />
+       <input id="add-player" class="button btn-lg btn-success center-block" type="submit" value="Add Player 1">
+      
+    </form>
+    
+    <!--  player1 answer and player2 boxes -->
+    <div class="container">
+          <div class="row">
+              <div class="col-md-4 box text-center div" id="player1">Waiting for Player 1</div>
+              <div class="col-md-4 box text-center div" id="answer">Time to Play the Game</div>
+              <div class="col-md-4 box text-center div" id="player2">Waiting for Player 2</div>
+          </div>
+    </div>
+    <br />
+
+    <!--  button to change players and game talk smack b0x -->
+    <div class="text-center">
+          <div class="btn-group " role="group">
+              <button id="new-players" type="button" class="btn-lg btn-primary btn-width" >Choose New Players</button>
+          </div><br /><br />
+          <div class="msgbox text-center container" id="gametalk" ></div>
+    </div>
+
+    
+
+      </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/rpsJscript.js"></script>
+
+  </body>
+
+</html>
