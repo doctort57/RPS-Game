@@ -38,39 +38,28 @@ var player1 = {player: "player1", playerName:"",choice:"",wins:0,losses:0,ties:0
 var player2 = {player: "player2",choice:"",wins:0,losses:0,ties:0,dateAdded: firebase.database.ServerValue.TIMESTAMP};
 
  database.ref().once("value", function(snapshot) {
-
                  snapshot.forEach(function(childSnapshot) {
-                  var childData = childSnapshot.val();
-   
-                    if (childData.player == "player1") {
-                        player = childData.player;
-                        playerName = childData.playerName;
-                        player1Wins = childData.wins;
-                        player1Losses = childData.losses;
-                        player1Ties = childData.ties;
-                
-                        setPlayer(player);
-                    } else {
-                        player = childData.player;
-                        playerName = childData.playerName;
-                        player2Wins = childData.wins;
-                        player2Losses = childData.losses;
-                        player2Ties = childData.ties;
-                        setPlayer(player);
+                    var childData = childSnapshot.val();
+     
+                      if (childData.player == "player1") {
+                          player = childData.player;
+                          playerName = childData.playerName;
+                          player1Wins = childData.wins;
+                          player1Losses = childData.losses;
+                          player1Ties = childData.ties;
+                  
+                          setPlayer(player);
+                      } else {
+                          player = childData.player;
+                          playerName = childData.playerName;
+                          player2Wins = childData.wins;
+                          player2Losses = childData.losses;
+                          player2Ties = childData.ties;
+                          setPlayer(player);
 
-                    }
-
-
-
-
-                     });                     
-  }); 
-
-
-
-
-
-
+                      }
+                 });                     
+ }); 
 
 
 // on child added 
@@ -114,7 +103,9 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
         if (newPost.player == "player1") {
             player1Choice = choice;
+            player1Nm = newPost.playerName;
         } else {
+            player2Nm = newPost.playerName;
             player2Choice = choice;
 
         }
@@ -138,15 +129,26 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
     // reset page for adding new players
     function changePlayers() {
+
               // empty player boxes
               $("#player1").empty();
+              var p = $("<p>");
+              p = $("<p>").text("Waiting for Player 1");
+              $(p).css({"color": "black", "font-size": "100%"});
+              $("#player1").append(p);
+             
               $("#player2").empty();
+              p = $("<p>");
+              p = $("<p>").text("Waiting for Player 2");
+              $(p).css({"color": "black", "font-size": "100%"});
+              $("#player2").append(p);
+
               $("#player2").fadeTo("slow", 0.4);
 
               // reset answer
               $("#answer").empty();
               p = $("<p>");
-              p = $("<p>").text("Play Another Game");
+              p = $("<p>").text("Time to Play the Game");
               $(p).css({"color": "green", "font-size": "100%"});
               $("#answer").append(p);
 
@@ -155,6 +157,16 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
               refname = "/player1";
               $("#new-players").hide();
               $("#gametalk").empty();
+              $("#gametalk").removeClass("border");
+
+              player1Wins = 0;
+              player1Losses = 0;
+              player1Ties = 0;
+
+              player2Wins = 0;
+              player2Losses = 0;
+              player2Ties = 0;
+
             
 
     }
@@ -177,7 +189,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
                   // add player1 choice to answer box
                   p = $("<p>").text(rps);
-                  $(p).css({"color": "red", "font-size": "175%"});
+                  $(p).css({"color": "red", "font-size": "150%"});
                   $(p).attr("id",rps);
                   $("#answer").append(p);
                   $("#player1").fadeTo("slow", 0.4);
@@ -191,7 +203,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
                   // add player 2 choice to answer box
                   p = $("<p>").text(rps);
-                  $(p).css({"color": "blue", "font-size": "175%"});
+                  $(p).css({"color": "blue", "font-size": "150%"});
                   $(p).attr("id",rps);
                   $("#answer").append(p);
                   $("#player2").fadeTo("slow", 0.4);
@@ -298,6 +310,8 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
             // WRITE Player 1 initial to firebase
             firebase.database().ref('player1/').set(player1);
             refname = "/player2";
+            $('#add-player').val("Add Player 2");
+            $("#player-input").val("");
             $("#player1").fadeTo("slow", 0.5);
             $("#player2").fadeTo("slow", 1);
         } else {
@@ -307,6 +321,8 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
             // WRITE Player 2 initial to firebase
             firebase.database().ref('player2/').set(player2);
             refname = "/player1";
+            $("#player-input").val("");
+            $("#player-form").hide();
             $("#player1").fadeTo("slow", 1);
             $("#player2").fadeTo("slow", 1);
         }
