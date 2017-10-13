@@ -1,4 +1,3 @@
-
 // 1. Initialize Firebase
 
 var config = {
@@ -75,18 +74,16 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
         if (newPost.player == "player1") {
              player1Nm = newPost.playerName;
-             
              setPlayer(player);
-       
-      //        $('#player1').css({"background-color": "lightgrey"});
-      //           $('#player2').css({"background-color": "lightblue"});
+   
              $('#add-player').val("Add Player 2");
         } else {
          
              player2Nm = newPost.playerName;
              setPlayer(player);
-         
              $('#player-form').hide();
+          
+   
         }
 });
 
@@ -98,15 +95,35 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
       var choice = newPost.choice;
       var player = newPost.player;
       playerName  =  newPost.playerName;
+     
 
       // set answers into variables for each player
-
+   
         if (newPost.player == "player1") {
             player1Choice = choice;
             player1Nm = newPost.playerName;
+            player1Wins = newPost.wins;
+            player1Losses = newPost.losses;
+            player1Ties = newPost.ties;
         } else {
             player2Nm = newPost.playerName;
             player2Choice = choice;
+            player2Wins = newPost.wins;
+            player2Losses = newPost.losses;
+            player2Ties = newPost.ties;
+            var cnt = player2Wins + player2Losses + player2Ties;
+            if (cnt == 0 ) {
+                $("#new-players").hide();
+                $("#gametalk").empty();
+                $("#gametalk").hide();
+
+                // reset answer
+                $("#answer").empty();
+                p = $("<p>");
+                p = $("<p>").text("Time to Play the Game");
+                $(p).css({"color": "green", "font-size": "100%"});
+                $("#answer").append(p);
+            }
 
         }
     
@@ -145,30 +162,13 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
               $("#player2").fadeTo("slow", 0.4);
 
-              // reset answer
-              $("#answer").empty();
-              p = $("<p>");
-              p = $("<p>").text("Time to Play the Game");
-              $(p).css({"color": "green", "font-size": "100%"});
-              $("#answer").append(p);
+              
 
               $("#player-form").show();
               $('#add-player').val("Add Player 1");
               refname = "/player1";
-              $("#new-players").hide();
-              $("#gametalk").empty();
-              $("#gametalk").removeClass("border");
-
-              player1Wins = 0;
-              player1Losses = 0;
-              player1Ties = 0;
-
-              player2Wins = 0;
-              player2Losses = 0;
-              player2Ties = 0;
-
-            
-
+          
+             
     }
 
 
@@ -213,6 +213,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
                       msgGame = playTime(player1Choice, player2Choice);
                     
                       // display game result in answer box
+                      $("#gametalk").show();
                       var p = $("<p>");
                       p = $("<p>").text(msgGame);
                       $(p).css({"color": "purple", "font-size": "100%"});
@@ -250,6 +251,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
     function setPlayer(player) {
   
           $("#"+player).empty();
+
           // player name
           var p = $("<p>");
           p = $("<p>").text(playerName);
@@ -296,7 +298,6 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
           refname = "/player2";
     }
- 
 
     // 2. Button for adding PLayers
     $("#add-player").on("click", function(event) {
@@ -473,5 +474,6 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
     $(document).on("click", ".player2", setPlayers);
     // on click to change players
     $(document).on("click", "#new-players", changePlayers);
+ 
  
 
