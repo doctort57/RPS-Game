@@ -1,4 +1,3 @@
-
 // 1. Initialize Firebase
 
 var config = {
@@ -38,39 +37,28 @@ var player1 = {player: "player1", playerName:"",choice:"",wins:0,losses:0,ties:0
 var player2 = {player: "player2",choice:"",wins:0,losses:0,ties:0,dateAdded: firebase.database.ServerValue.TIMESTAMP};
 
  database.ref().once("value", function(snapshot) {
-
                  snapshot.forEach(function(childSnapshot) {
-                  var childData = childSnapshot.val();
-   
-                    if (childData.player == "player1") {
-                        player = childData.player;
-                        playerName = childData.playerName;
-                        player1Wins = childData.wins;
-                        player1Losses = childData.losses;
-                        player1Ties = childData.ties;
-                
-                        setPlayer(player);
-                    } else {
-                        player = childData.player;
-                        playerName = childData.playerName;
-                        player2Wins = childData.wins;
-                        player2Losses = childData.losses;
-                        player2Ties = childData.ties;
-                        setPlayer(player);
+                    var childData = childSnapshot.val();
+     
+                      if (childData.player == "player1") {
+                          player = childData.player;
+                          playerName = childData.playerName;
+                          player1Wins = childData.wins;
+                          player1Losses = childData.losses;
+                          player1Ties = childData.ties;
+                  
+                          setPlayer(player);
+                      } else {
+                          player = childData.player;
+                          playerName = childData.playerName;
+                          player2Wins = childData.wins;
+                          player2Losses = childData.losses;
+                          player2Ties = childData.ties;
+                          setPlayer(player);
 
-                    }
-
-
-
-
-                     });                     
-  }); 
-
-
-
-
-
-
+                      }
+                 });                     
+ }); 
 
 
 // on child added 
@@ -86,18 +74,16 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
         if (newPost.player == "player1") {
              player1Nm = newPost.playerName;
-             
              setPlayer(player);
-       
-      //        $('#player1').css({"background-color": "lightgrey"});
-      //           $('#player2').css({"background-color": "lightblue"});
+   
              $('#add-player').val("Add Player 2");
         } else {
          
              player2Nm = newPost.playerName;
              setPlayer(player);
-         
              $('#player-form').hide();
+          
+   
         }
 });
 
@@ -109,13 +95,35 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
       var choice = newPost.choice;
       var player = newPost.player;
       playerName  =  newPost.playerName;
+     
 
       // set answers into variables for each player
-
+   
         if (newPost.player == "player1") {
             player1Choice = choice;
+            player1Nm = newPost.playerName;
+            player1Wins = newPost.wins;
+            player1Losses = newPost.losses;
+            player1Ties = newPost.ties;
         } else {
+            player2Nm = newPost.playerName;
             player2Choice = choice;
+            player2Wins = newPost.wins;
+            player2Losses = newPost.losses;
+            player2Ties = newPost.ties;
+            var cnt = player2Wins + player2Losses + player2Ties;
+            if (cnt == 0 ) {
+                $("#new-players").hide();
+                $("#gametalk").empty();
+                $("#gametalk").hide();
+
+                // reset answer
+                $("#answer").empty();
+                p = $("<p>");
+                p = $("<p>").text("Time to Play the Game");
+                $(p).css({"color": "green", "font-size": "100%"});
+                $("#answer").append(p);
+            }
 
         }
     
@@ -138,25 +146,29 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
     // reset page for adding new players
     function changePlayers() {
+
               // empty player boxes
               $("#player1").empty();
+              var p = $("<p>");
+              p = $("<p>").text("Waiting for Player 1");
+              $(p).css({"color": "black", "font-size": "100%"});
+              $("#player1").append(p);
+             
               $("#player2").empty();
+              p = $("<p>");
+              p = $("<p>").text("Waiting for Player 2");
+              $(p).css({"color": "black", "font-size": "100%"});
+              $("#player2").append(p);
+
               $("#player2").fadeTo("slow", 0.4);
 
-              // reset answer
-              $("#answer").empty();
-              p = $("<p>");
-              p = $("<p>").text("Play Another Game");
-              $(p).css({"color": "green", "font-size": "100%"});
-              $("#answer").append(p);
+              
 
               $("#player-form").show();
               $('#add-player').val("Add Player 1");
               refname = "/player1";
-              $("#new-players").hide();
-              $("#gametalk").empty();
-            
-
+          
+             
     }
 
 
@@ -177,7 +189,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
                   // add player1 choice to answer box
                   p = $("<p>").text(rps);
-                  $(p).css({"color": "red", "font-size": "175%"});
+                  $(p).css({"color": "red", "font-size": "150%"});
                   $(p).attr("id",rps);
                   $("#answer").append(p);
                   $("#player1").fadeTo("slow", 0.4);
@@ -191,7 +203,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
                   // add player 2 choice to answer box
                   p = $("<p>").text(rps);
-                  $(p).css({"color": "blue", "font-size": "175%"});
+                  $(p).css({"color": "blue", "font-size": "150%"});
                   $(p).attr("id",rps);
                   $("#answer").append(p);
                   $("#player2").fadeTo("slow", 0.4);
@@ -201,6 +213,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
                       msgGame = playTime(player1Choice, player2Choice);
                     
                       // display game result in answer box
+                      $("#gametalk").show();
                       var p = $("<p>");
                       p = $("<p>").text(msgGame);
                       $(p).css({"color": "purple", "font-size": "100%"});
@@ -238,6 +251,7 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
     function setPlayer(player) {
   
           $("#"+player).empty();
+
           // player name
           var p = $("<p>");
           p = $("<p>").text(playerName);
@@ -284,7 +298,6 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
 
           refname = "/player2";
     }
- 
 
     // 2. Button for adding PLayers
     $("#add-player").on("click", function(event) {
@@ -298,6 +311,8 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
             // WRITE Player 1 initial to firebase
             firebase.database().ref('player1/').set(player1);
             refname = "/player2";
+            $('#add-player').val("Add Player 2");
+            $("#player-input").val("");
             $("#player1").fadeTo("slow", 0.5);
             $("#player2").fadeTo("slow", 1);
         } else {
@@ -307,6 +322,8 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
             // WRITE Player 2 initial to firebase
             firebase.database().ref('player2/').set(player2);
             refname = "/player1";
+            $("#player-input").val("");
+            $("#player-form").hide();
             $("#player1").fadeTo("slow", 1);
             $("#player2").fadeTo("slow", 1);
         }
@@ -457,5 +474,6 @@ database.ref().on("child_added", function(snapshot, prevChildKey) {
     $(document).on("click", ".player2", setPlayers);
     // on click to change players
     $(document).on("click", "#new-players", changePlayers);
+ 
  
 
